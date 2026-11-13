@@ -49,6 +49,9 @@ class OrdemServico(models.Model):
     data_abertura = models.DateField()
     data_fechamento = models.DateField()
     relato_cliente = models.TextField()
-    status = models.CharField(max_length = 20)
+    status = models.CharField(
+        max_length= 20,
+        choices= STATUS_CHOICE.choices
+    )
     def __str__(self):
         return self.numero_os
