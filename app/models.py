@@ -1,3 +1,5 @@
+from django.db.models import DateField
+from django.db.models import FloatField
 from django.db.models import CASCADE
 import datetime
 from django.db import models
@@ -14,7 +16,7 @@ class Cliente(models.Model):
     def __str__(self):
         return self.nome
 
-
+    
 
 class Aparelho(models.Model):
     nome = models.CharField(max_length=100)
@@ -56,10 +58,6 @@ class servico(produto):
         verbose_name = "Serviço"
         verbose_name_plural = "Serviços"
 
-class usuario(models.Model):
-    nome = models.CharField(max_length=100)
-    cargo = models.CharField(max_length=15)
-
 class itemPeca(models.Model):
     Nome = models.ForeignKey(peca, on_delete=models.CASCADE)
     QtdeP = models.IntegerField()
@@ -82,6 +80,23 @@ class Orcamento(models.Model):
     def calcularpreco():
         return self.QtdeS * self.Val_unitarioS + self.QtdeP * self.Val_unitarioP      
     Valor = models.FloatField(default= Orcamento.calcularpreco)
+
+class Usuario(models.Model):
+    Nome = models.CharField(max_length= 40)
+    Cargo = models.CharField(max_length= 15)
+
+class Atendente(models.Model):
+    def CadastrarCliente(self, nome, email, telefone, cpf, endereco):
+        novo_cliente = Cliente(nome=nome,email=email,telefone=telefone,endereco=endereco,cpf=cpf)
+        novo_cliente.save()
+    def RegistrarVenda(self, valor, data, vendedor):
+        nova_venda = venda(Valor=valor, DataVenda= data, Vendedor= vendedor)
+        nova_venda.save()
+
+class venda(models.Model):
+    Valor = FloatField
+    DataVenda = DateField
+    Vendedor = models.ForeignKey(Atendente, on_delete= models.CASCADE)
 
 class OrdemServico(models.Model):
     STATUS_CHOICE = (
