@@ -6,6 +6,26 @@ from django.db import models
 
 # Create your models here
 
+# CLASSES PARA FAZER:
+#Orcamento ok
+#Pagamento
+#Produto ok
+#Peca ok
+#Item_peca ok
+#Servico ok
+#item_servico ok
+#Garantia
+#OrdemServico ok
+#Cliente ok
+#Aparelho ok
+#Usuário ok
+#Técnico
+#Atendente
+#Gerente
+
+#Venda
+
+
 
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)
@@ -17,7 +37,6 @@ class Cliente(models.Model):
         return self.nome
 
     
-
 class Aparelho(models.Model):
     nome = models.CharField(max_length=100)
     marca = models.CharField(max_length=100)
@@ -26,12 +45,6 @@ class Aparelho(models.Model):
     descricao = models.TextField()
     def __str__(self):
         return self.nome
-
-
-
-
-
-
 
 
 class produto(models.Model):
@@ -77,6 +90,7 @@ class Orcamento(models.Model):
     Val_unitarioS = models.ForeignKey(itemServico, on_delete= models.CASCADE)
     QtdeP = models.ForeignKey(itemPeca, on_delete= models.CASCADE)
     Val_unitarioP = models.ForeignKey(itemPeca, on_delete= models.CASCADE)
+    Imagem = models.BinaryField
     def calcularpreco():
         return self.QtdeS * self.Val_unitarioS + self.QtdeP * self.Val_unitarioP      
     Valor = models.FloatField(default= Orcamento.calcularpreco)
