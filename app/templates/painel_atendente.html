@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Atendente - Assistência Técnica</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        header .badge-role {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        header .user-actions a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 14px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        header .user-actions a:hover {
+            background-color: #1e293b;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 28px auto;
+            padding: 0 20px;
+        }
+
+        .alert-msg {
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .grid-forms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 22px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #2563eb;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 11px 16px;
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 6px;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-success {
+            background-color: #059669;
+        }
+
+        .btn-success:hover {
+            background-color: #047857;
+        }
+
+        .table-card {
+            margin-top: 12px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .code-pill {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            font-family: monospace;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <h1>🔧 Assistência Técnica</h1>
+            <span class="badge-role">Painel do Atendente</span>
+        </div>
+        <div class="user-actions">
+            <a href="{% url 'login' %}">Sair</a>
+        </div>
+    </header>
+
+    <div class="container">
+
+        {% if mensagem %}
+            <div class="alert-msg">
+                {{ mensagem }}
+            </div>
+        {% endif %}
+
+        <div class="grid-forms">
+            <!-- 1. Cadastrar Cliente -->
+            <div class="card">
+                <h2>👤 1. Cadastrar Cliente</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="cadastrar_cliente">
+
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" name="nome" placeholder="Ex: Maria Oliveira" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CPF (somente números)</label>
+                        <input type="text" name="cpf" maxlength="11" placeholder="12345678901" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" name="email" placeholder="cliente@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" name="telefone" placeholder="(11) 99999-9999" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço</label>
+                        <input type="text" name="endereco" placeholder="Rua, Número, Bairro" required>
+                    </div>
+                    <button type="submit" class="btn">Salvar Cliente</button>
+                </form>
+            </div>
+
+            <!-- 2. Cadastrar Aparelho -->
+            <div class="card">
+                <h2>📱 2. Cadastrar Aparelho</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="cadastrar_aparelho">
+
+                    <div class="form-group">
+                        <label>Cliente Proprietário</label>
+                        <select name="cliente_id" required>
+                            <option value="">Selecione o cliente...</option>
+                            {% for c in clientes %}
+                                <option value="{{ c.id }}">{{ c.nome }} (CPF: {{ c.cpf }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo / Nome do Aparelho</label>
+                        <input type="text" name="nome" placeholder="Ex: Smartphone, Notebook" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Marca</label>
+                        <input type="text" name="marca" placeholder="Ex: Samsung, Dell, Apple" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Modelo</label>
+                        <input type="text" name="modelo" placeholder="Ex: Galaxy S23, Inspiron 15" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição / Estado Físico</label>
+                        <textarea name="descricao" rows="2" placeholder="Observações sobre o aparelho" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Salvar Aparelho</button>
+                </form>
+            </div>
+
+            <!-- 3. Abrir Ordem de Serviço -->
+            <div class="card">
+                <h2>📋 3. Abrir Ordem de Serviço (OS)</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="abrir_os">
+
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select name="cliente_id" required>
+                            <option value="">Selecione o cliente...</option>
+                            {% for c in clientes %}
+                                <option value="{{ c.id }}">{{ c.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Aparelho</label>
+                        <select name="aparelho_id" required>
+                            <option value="">Selecione o aparelho...</option>
+                            {% for a in aparelhos %}
+                                <option value="{{ a.id }}">{{ a.nome }} {{ a.marca }} ({{ a.cliente.nome }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Relato do Cliente (Defeito reclamado)</label>
+                        <textarea name="relato_cliente" rows="3" placeholder="Descreva o problema relatado pelo cliente..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Abrir OS e Gerar Senha do Cliente</button>
+                </form>
+            </div>
+
+            <!-- 4. Registrar Venda -->
+            <div class="card">
+                <h2>🛒 4. Registrar Venda de Balcão</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="registrar_venda">
+
+                    <div class="form-group">
+                        <label>Peça / Produto</label>
+                        <select name="peca_id" required>
+                            <option value="">Selecione a peça...</option>
+                            {% for p in pecas %}
+                                <option value="{{ p.id }}">{{ p.Nome }} - {{ p.Marca }} (R$ {{ p.Preco }} | Estoque: {{ p.Qtde_estoque }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade</label>
+                        <input type="number" name="quantidade" min="1" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data da Venda</label>
+                        <input type="date" name="data_venda" required>
+                    </div>
+                    <button type="submit" class="btn">Registrar Venda e Baixar Estoque</button>
+                </form>
+            </div>
+
+            <!-- 5. Fechar OS e Registrar Pagamento -->
+            <div class="card">
+                <h2>💳 5. Fechar OS (Pagamento e Garantia)</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="fechar_os_pagamento">
+
+                    <div class="form-group">
+                        <label>Ordem de Serviço</label>
+                        <select name="os_id" required>
+                            <option value="">Selecione a OS...</option>
+                            {% for os in ordens %}
+                                <option value="{{ os.id }}">{{ os.numero_os }} - {{ os.cliente.nome }} ({{ os.status }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Forma de Pagamento</label>
+                        <select name="tipo_pagamento" required>
+                            <option value="PIX">PIX</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Cartão de Débito">Cartão de Débito</option>
+                            <option value="Dinheiro">Dinheiro</option>
+                            <option value="Boleto Parcelado">Boleto Parcelado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Parcelas</label>
+                        <input type="number" name="parcelas" min="1" max="12" value="1" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Confirmar Pagamento e Fechar OS</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabela de Ordens de Serviço e Credenciais de Acesso do Cliente -->
+        <div class="card table-card">
+            <h2>🔑 Ordens de Serviço e Senhas de Acesso dos Clientes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Login (Nº da OS)</th>
+                        <th>Senha do Cliente</th>
+                        <th>Cliente</th>
+                        <th>Aparelho</th>
+                        <th>Data Abertura</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for os in ordens %}
+                        <tr>
+                            <td><span class="code-pill">{{ os.numero_os }}</span></td>
+                            <td><span class="code-pill">{{ os.cliente.senha_acesso|default:"-" }}</span></td>
+                            <td>{{ os.cliente.nome }}</td>
+                            <td>{{ os.aparelho.nome }} ({{ os.aparelho.marca }} {{ os.aparelho.modelo }})</td>
+                            <td>{{ os.data_abertura|date:"d/m/Y" }}</td>
+                            <td><span class="status-badge">{{ os.status }}</span></td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">Nenhuma Ordem de Serviço cadastrada ainda.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>

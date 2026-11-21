@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Cliente - Assistência Técnica</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #1e293b;
+        }
+
+        .login-card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 32px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .login-header .icon {
+            width: 56px;
+            height: 56px;
+            background-color: #e0f2fe;
+            color: #0284c7;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 14px;
+        }
+
+        .login-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .login-header p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .error-alert {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #0f172a;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .form-group .helper-text {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 13px;
+            background-color: #0284c7;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 6px;
+        }
+
+        .btn-login:hover {
+            background-color: #0369a1;
+        }
+
+        .btn-login:active {
+            transform: scale(0.99);
+        }
+
+        .login-footer {
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #f1f5f9;
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .login-footer a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="login-header">
+            <div class="icon">📱</div>
+            <h1>Portal do Cliente</h1>
+            <p>Consulte o status e o orçamento da sua Ordem de Serviço</p>
+        </div>
+
+        {% if erro %}
+            <div class="error-alert">
+                {{ erro }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="username">Número da Ordem de Serviço (OS)</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Ex: OS-2026-001"
+                    required
+                    autofocus
+                >
+                <span class="helper-text">Informe o código da OS entregue pelo atendente.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha da OS</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Digite a senha de 6 dígitos"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn-login">Consultar Minha OS</button>
+        </form>
+
+        <div class="login-footer">
+            Caso tenha dúvidas sobre sua senha, consulte o atendente.
+        </div>
+    </div>
+
+</body>
+</html>

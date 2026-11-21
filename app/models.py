@@ -2,9 +2,13 @@ from django.db.models import DateField
 from django.db.models import FloatField
 from django.db.models import CASCADE
 import datetime
+import base64
 from django.db import models
 from django.core.mail import send_mail
 from reportlab.pdfgen import canvas
+from django.contrib.auth.models import User
+import random
+import string
 
 # Create your models here
 
@@ -29,11 +33,13 @@ from reportlab.pdfgen import canvas
 
 
 class Cliente(models.Model):
+    user = models.OneToOneField(User, on_delete= models.CASCADE, null= True, blank = True)
     nome = models.CharField(max_length=100)
     email = models.EmailField()
     telefone = models.CharField(max_length=15)
     endereco = models.CharField(max_length=200)
     cpf = models.CharField(max_length=11)
+    senha_acesso = models.CharField(max_length=10, null=True, blank=True)
     def __str__(self):
         return self.nome
     def ConfirmarOrcamento(self, ordem_servico, aceito):
@@ -110,7 +116,14 @@ class Orcamento(models.Model):
         return self.QtdeS.QtdeS * self.Val_unitarioS.Val_unitarioS + self.QtdeP.QtdeP * self.Val_unitarioP.Val_unitarioP
     Valor = models.FloatField(default=calcularpreco)
 
+    @property
+    def imagem_base64(self):
+        if self.Imagem:
+            return base64.b64encode(bytes(self.Imagem)).decode('utf-8')
+        return None
+
 class Usuario(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null= True, blank = True)
     Nome = models.CharField(max_length= 40)
     Cargo = models.CharField(max_length= 15)
 
@@ -121,9 +134,13 @@ class Atendente(Usuario):
     def CadastrarAparelho(self, nome, marca, modelo, cliente, descricao):
         novo_aparelho = Aparelho(nome=nome, marca=marca, modelo=modelo, cliente=cliente, descricao=descricao)
         novo_aparelho.save()
-    def RegistrarVenda(self, valor, data, vendedor):
-        nova_venda = venda(Valor=valor, DataVenda= data, Vendedor= vendedor)
+    def RegistrarVenda(self, peca_obj, quantidade, data, vendedor):
+        peca_obj.Qtde_estoque = peca_obj.Qtde_estoque - quantidade
+        peca_obj.save()
+        valor_total = peca_obj.Preco * quantidade
+        nova_venda = venda(Valor=valor_total, DataVenda=data, Vendedor=vendedor)
         nova_venda.save()
+        return nova_venda
     def FecharOSpagamento(self, valor, parcelas, tipopagamento, OrdemServico):
         registro_pagamento = Pagamento(
             Tipo_pagamento= tipopagamento,
@@ -133,7 +150,12 @@ class Atendente(Usuario):
         registro_pagamento.save()
         OrdemServico.data_fechamento = datetime.date.today()
         OrdemServico.save()
+    def GerarSenhaCliente(self):
+        caracteres = string.ascii_uppercase + string.digits  # A-Z e 0-9
+        senha = ''.join(random.choices(caracteres, k=6))
+        return senha
     def AbrirOS(self, relatocliente, cliente, aparelho):
+        senha_gerada = self.GerarSenhaCliente()
         data_hoje = datetime.date.today()
         os_nova = OrdemServico(
             cliente = cliente,
@@ -143,7 +165,13 @@ class Atendente(Usuario):
             data_abertura = data_hoje,
             relato_cliente = relatocliente,
         )
+    
         os_nova.save()
+        user_os = User.objects.create_user(username = os_nova.numero_os, password= senha_gerada)
+        cliente.user = user_os
+        cliente.senha_acesso = senha_gerada
+        cliente.save()
+        return os_nova
         
 
 
@@ -228,8 +256,9 @@ class Garantia(models.Model):
     Data_fim = models.DateField()
 
 class tecnico(Usuario):
-    def CadastrarOrcamento(self, itemPeca,itemServico, imagem=None):
-        novo_orcamento = Orcamento(QtdeS=itemServico, QtdeP= itemPeca, Val_unitarioS= itemServico, Val_unitarioP= itemPeca)
+    def CadastrarOrcamento(self, itemPeca, itemServico, imagem=None):
+        novo_orcamento = Orcamento(QtdeS=itemServico, QtdeP=itemPeca, Val_unitarioS=itemServico, Val_unitarioP=itemPeca, Imagem=imagem)
+        novo_orcamento.Valor = novo_orcamento.calcularpreco()
         novo_orcamento.save()
         return novo_orcamento
     def AtualizarStatus(self, ordem_servico, novo_status):

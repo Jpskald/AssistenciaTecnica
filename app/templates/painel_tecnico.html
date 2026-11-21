@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Técnico - Assistência Técnica</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        header .badge-role {
+            background-color: #d97706;
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        header .user-actions a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 14px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        header .user-actions a:hover {
+            background-color: #1e293b;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 28px auto;
+            padding: 0 20px;
+        }
+
+        .alert-msg {
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .grid-forms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 22px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #d97706;
+        }
+
+        .helper-text {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 11px 16px;
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 6px;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-warning {
+            background-color: #d97706;
+        }
+
+        .btn-warning:hover {
+            background-color: #b45309;
+        }
+
+        .btn-success {
+            background-color: #059669;
+        }
+
+        .btn-success:hover {
+            background-color: #047857;
+        }
+
+        .table-card {
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .code-pill {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            font-family: monospace;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <h1>🛠️ Assistência Técnica</h1>
+            <span class="badge-role">Painel do Técnico</span>
+        </div>
+        <div class="user-actions">
+            <a href="{% url 'login' %}">Sair</a>
+        </div>
+    </header>
+
+    <div class="container">
+
+        {% if mensagem %}
+            <div class="alert-msg">
+                {{ mensagem }}
+            </div>
+        {% endif %}
+
+        <div class="grid-forms">
+            <!-- 1. Registrar Uso de Peça -->
+            <div class="card">
+                <h2>🔩 1. Registrar Uso de Peça</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="registrar_uso_peca">
+
+                    <div class="form-group">
+                        <label>Peça do Estoque</label>
+                        <select name="peca_id" required>
+                            <option value="">Selecione a peça...</option>
+                            {% for p in pecas %}
+                                <option value="{{ p.id }}">{{ p.Nome }} - {{ p.Marca }} (R$ {{ p.Preco }} | Estoque: {{ p.Qtde_estoque }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade Utilizada</label>
+                        <input type="number" name="quantidade" min="1" value="1" required>
+                        <span class="helper-text">Dá baixa automática no estoque e gera o item de peça para o orçamento.</span>
+                    </div>
+                    <button type="submit" class="btn">Registrar Peça e Baixar Estoque</button>
+                </form>
+            </div>
+
+            <!-- 2. Cadastrar Orçamento -->
+            <div class="card">
+                <h2>📝 2. Cadastrar Orçamento na OS</h2>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="cadastrar_orcamento">
+
+                    <div class="form-group">
+                        <label>Ordem de Serviço</label>
+                        <select name="os_id" required>
+                            <option value="">Selecione a OS...</option>
+                            {% for os in ordens %}
+                                <option value="{{ os.id }}">{{ os.numero_os }} - {{ os.aparelho.nome }} ({{ os.cliente.nome }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Item de Peça Registrado</label>
+                        <select name="item_peca_id" required>
+                            <option value="">Selecione o item de peça...</option>
+                            {% for ip in itens_peca %}
+                                <option value="{{ ip.id }}">{{ ip.QtdeP }}x {{ ip.Nome.Nome }} (R$ {{ ip.Val_unitarioP }} un.)</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Serviço a Realizar</label>
+                        <select name="servico_id" required>
+                            <option value="">Selecione o serviço...</option>
+                            {% for s in servicos %}
+                                <option value="{{ s.id }}">{{ s.Nome }} (R$ {{ s.Preco }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade do Serviço</label>
+                        <input type="number" name="qtde_servico" min="1" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Foto / Imagem do Aparelho (Opcional)</label>
+                        <input type="file" name="imagem" accept="image/*">
+                        <span class="helper-text">Anexe uma foto do diagnóstico ou da peça no orçamento.</span>
+                    </div>
+                    <button type="submit" class="btn btn-success">Gerar Orçamento e Calcular Total</button>
+                </form>
+            </div>
+
+            <!-- 3. Atualizar Status da OS -->
+            <div class="card">
+                <h2>🔄 3. Atualizar Status da OS</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="atualizar_status">
+
+                    <div class="form-group">
+                        <label>Ordem de Serviço</label>
+                        <select name="os_id" required>
+                            <option value="">Selecione a OS...</option>
+                            {% for os in ordens %}
+                                <option value="{{ os.id }}">{{ os.numero_os }} - {{ os.aparelho.nome }} (Atual: {{ os.status }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Novo Status</label>
+                        <select name="novo_status" required>
+                            <option value="AGUARDANDO TRIAGEM">Aguardando Triagem</option>
+                            <option value="EM TRIAGEM">Em Triagem</option>
+                            <option value="ORÇAMENTO PRONTO">Orçamento Pronto (Envia e-mail ao cliente)</option>
+                            <option value="ORÇAMENTO ACEITO">Orçamento Aceito</option>
+                            <option value="EM REPARO">Em Reparo</option>
+                            <option value="TESTE">Teste</option>
+                            <option value="ENTREGUE">Entregue</option>
+                            <option value="CANCELADO">Cancelado</option>
+                        </select>
+                        <span class="helper-text">Ao mudar para "Orçamento Pronto", o cliente recebe um e-mail automático.</span>
+                    </div>
+                    <button type="submit" class="btn btn-warning">Atualizar Status</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabela de Ordens de Serviço para o Técnico -->
+        <div class="card table-card">
+            <h2>📋 Ordens de Serviço na Bancada</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nº da OS</th>
+                        <th>Cliente</th>
+                        <th>Aparelho</th>
+                        <th>Defeito Relatado</th>
+                        <th>Valor Orçamento</th>
+                        <th>Status Atual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for os in ordens %}
+                        <tr>
+                            <td><span class="code-pill">{{ os.numero_os }}</span></td>
+                            <td>{{ os.cliente.nome }}</td>
+                            <td>{{ os.aparelho.nome }} ({{ os.aparelho.marca }} {{ os.aparelho.modelo }})</td>
+                            <td>{{ os.relato_cliente }}</td>
+                            <td>
+                                {% if os.Valor %}
+                                    <strong>R$ {{ os.Valor.Valor|floatformat:2 }}</strong>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td><span class="status-badge">{{ os.status }}</span></td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">Nenhuma Ordem de Serviço registrada no momento.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>

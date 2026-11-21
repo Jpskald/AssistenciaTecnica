@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Cliente - Assistência Técnica</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        header .badge-role {
+            background-color: #0ea5e9;
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        header .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        header .user-actions span {
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        header .user-actions a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 14px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        header .user-actions a:hover {
+            background-color: #1e293b;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 32px auto;
+            padding: 0 20px;
+        }
+
+        .alert-msg {
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #ffffff;
+            padding: 24px 28px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .welcome-banner h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .welcome-banner p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .os-card {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 26px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 22px;
+        }
+
+        .os-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .os-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .os-number span {
+            background-color: #eff6ff;
+            color: #2563eb;
+            font-family: monospace;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .status-pill {
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .status-orcamento {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
+        .status-aceito, .status-entregue {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .status-cancelado {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .os-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .detail-box {
+            background-color: #f8fafc;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .detail-box .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .detail-box .value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .relato-box {
+            background-color: #f8fafc;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 18px;
+        }
+
+        .relato-box .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .relato-box p {
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.5;
+        }
+
+        .orcamento-box {
+            background-color: #fffbeb;
+            border: 1.5px solid #fde68a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .orcamento-box h3 {
+            font-size: 16px;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+
+        .orcamento-box p {
+            font-size: 14px;
+            color: #78350f;
+            margin-bottom: 16px;
+        }
+
+        .orcamento-price {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 16px;
+        }
+
+        .orcamento-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-approve {
+            padding: 11px 20px;
+            background-color: #059669;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-approve:hover {
+            background-color: #047857;
+        }
+
+        .btn-reject {
+            padding: 11px 20px;
+            background-color: #dc2626;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-reject:hover {
+            background-color: #b91c1c;
+        }
+
+        .empty-state {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 40px 24px;
+            text-align: center;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <h1>🔧 Assistência Técnica</h1>
+            <span class="badge-role">Área do Cliente</span>
+        </div>
+        <div class="user-actions">
+            {% if cliente %}
+                <span>Olá, <strong>{{ cliente.nome }}</strong></span>
+            {% endif %}
+            <a href="{% url 'login' %}">Sair</a>
+        </div>
+    </header>
+
+    <div class="container">
+
+        {% if mensagem %}
+            <div class="alert-msg">
+                {{ mensagem }}
+            </div>
+        {% endif %}
+
+        {% if cliente %}
+            <div class="welcome-banner">
+                <div>
+                    <h2>Acompanhamento de Ordem de Serviço</h2>
+                    <p>Cliente: {{ cliente.nome }} | CPF: {{ cliente.cpf }} | E-mail: {{ cliente.email }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% for os in ordens %}
+            <div class="os-card">
+                <div class="os-header">
+                    <div class="os-number">
+                        Ordem de Serviço: <span>{{ os.numero_os }}</span>
+                    </div>
+                    <span class="status-pill
+                        {% if os.status == 'ORÇAMENTO PRONTO' %}status-orcamento
+                        {% elif os.status == 'ORÇAMENTO ACEITO' or os.status == 'ENTREGUE' %}status-aceito
+                        {% elif os.status == 'CANCELADO' %}status-cancelado{% endif %}">
+                        Status: {{ os.status }}
+                    </span>
+                </div>
+
+                <div class="os-details-grid">
+                    <div class="detail-box">
+                        <div class="label">Aparelho</div>
+                        <div class="value">{{ os.aparelho.nome }}</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="label">Marca / Modelo</div>
+                        <div class="value">{{ os.aparelho.marca }} - {{ os.aparelho.modelo }}</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="label">Data de Abertura</div>
+                        <div class="value">{{ os.data_abertura|date:"d/m/Y" }}</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="label">Data de Fechamento</div>
+                        <div class="value">
+                            {% if os.data_fechamento %}
+                                {{ os.data_fechamento|date:"d/m/Y" }}
+                            {% else %}
+                                Em andamento
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relato-box">
+                    <div class="label">Relato / Defeito Informado</div>
+                    <p>{{ os.relato_cliente }}</p>
+                </div>
+
+                {% if os.Valor %}
+                    <div class="relato-box">
+                        <div class="label">Valor do Orçamento</div>
+                        <p><strong>R$ {{ os.Valor.Valor|floatformat:2 }}</strong></p>
+
+                        {% if os.Valor.imagem_base64 %}
+                            <div style="margin-top: 12px;">
+                                <div class="label">Foto / Diagnóstico do Técnico</div>
+                                <img
+                                    src="data:image/jpeg;base64,{{ os.Valor.imagem_base64 }}"
+                                    alt="Foto do Orçamento - {{ os.numero_os }}"
+                                    style="max-width: 100%; max-height: 360px; border-radius: 10px; border: 1px solid #cbd5e1; margin-top: 6px; display: block;"
+                                >
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <!-- Se o status for ORÇAMENTO PRONTO, permite ao cliente Aceitar ou Recusar -->
+                {% if os.status == 'ORÇAMENTO PRONTO' %}
+                    <div class="orcamento-box">
+                        <h3>⚠️ Seu orçamento está pronto para avaliação!</h3>
+                        <p>Deseja aprovar o orçamento para iniciarmos o reparo do seu aparelho? Caso recuse, a Ordem de Serviço será cancelada.</p>
+
+                        {% if os.Valor %}
+                            <div class="orcamento-price">
+                                Total: R$ {{ os.Valor.Valor|floatformat:2 }}
+                            </div>
+                        {% endif %}
+
+                        <div class="orcamento-actions">
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="os_id" value="{{ os.id }}">
+                                <input type="hidden" name="decisao" value="aceitar">
+                                <button type="submit" class="btn-approve">✅ Aceitar Orçamento</button>
+                            </form>
+
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="os_id" value="{{ os.id }}">
+                                <input type="hidden" name="decisao" value="recusar">
+                                <button type="submit" class="btn-reject">❌ Recusar Orçamento (Cancelar OS)</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                <h3>Nenhuma Ordem de Serviço encontrada para esta conta.</h3>
+                <p>Verifique com o atendente se sua OS já foi registrada no sistema.</p>
+            </div>
+        {% endfor %}
+
+    </div>
+
+</body>
+</html>

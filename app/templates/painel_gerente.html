@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Gerente - Assistência Técnica</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        header .badge-role {
+            background-color: #7c3aed;
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        header .user-actions a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 14px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        header .user-actions a:hover {
+            background-color: #1e293b;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1320px;
+            margin: 28px auto;
+            padding: 0 20px;
+        }
+
+        .alert-msg {
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 28px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid-forms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 22px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #7c3aed;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 11px 16px;
+            background-color: #7c3aed;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 6px;
+        }
+
+        .btn:hover {
+            background-color: #6d28d9;
+        }
+
+        .btn-blue {
+            background-color: #2563eb;
+        }
+
+        .btn-blue:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-success {
+            background-color: #059669;
+        }
+
+        .btn-success:hover {
+            background-color: #047857;
+        }
+
+        .btn-danger-sm {
+            padding: 6px 12px;
+            background-color: #dc2626;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-danger-sm:hover {
+            background-color: #b91c1c;
+        }
+
+        .table-card {
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .role-pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: #ede9fe;
+            color: #6d28d9;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <h1>📊 Assistência Técnica</h1>
+            <span class="badge-role">Painel do Gerente</span>
+        </div>
+        <div class="user-actions">
+            <a href="{% url 'login' %}">Sair</a>
+        </div>
+    </header>
+
+    <div class="container">
+
+        {% if mensagem %}
+            <div class="alert-msg">
+                {{ mensagem }}
+            </div>
+        {% endif %}
+
+        <!-- SEÇÃO 1: GERENCIAMENTO DE PEÇAS (PRODUTOS) E SERVIÇOS -->
+        <div class="section-title">📦 1. Gerenciamento de Peças e Serviços (CRUD)</div>
+        <div class="grid-forms">
+            <!-- Adicionar Produto (Peça) -->
+            <div class="card">
+                <h2>➕ Adicionar Produto (Peça)</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="adicionar_produto">
+
+                    <div class="form-group">
+                        <label>Nome da Peça</label>
+                        <input type="text" name="nome" placeholder="Ex: Tela AMOLED, Bateria" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Marca</label>
+                        <input type="text" name="marca" placeholder="Ex: Samsung, Apple" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Série / Código</label>
+                        <input type="text" name="num_serie" placeholder="Ex: SN-987654" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Preço Unitário (R$)</label>
+                        <input type="number" step="0.01" name="preco" placeholder="Ex: 350.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade em Estoque</label>
+                        <input type="number" name="qtde_estoque" min="0" value="1" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Adicionar Peça</button>
+                </form>
+            </div>
+
+            <!-- Editar Produto (Peça) -->
+            <div class="card">
+                <h2>✏️ Editar Produto (Peça)</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="editar_produto">
+
+                    <div class="form-group">
+                        <label>Selecione a Peça para Editar</label>
+                        <select name="id_produto" required>
+                            <option value="">Selecione a peça...</option>
+                            {% for p in pecas %}
+                                <option value="{{ p.id }}">#{{ p.id }} - {{ p.Nome }} ({{ p.Marca }} | Estoque: {{ p.Qtde_estoque }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Novo Nome</label>
+                        <input type="text" name="nome" placeholder="Nome atualizado" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nova Marca</label>
+                        <input type="text" name="marca" placeholder="Marca atualizada" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Novo Número de Série</label>
+                        <input type="text" name="num_serie" placeholder="Nº de série atualizado" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Novo Preço (R$)</label>
+                        <input type="number" step="0.01" name="preco" placeholder="Ex: 380.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nova Quantidade em Estoque</label>
+                        <input type="number" name="qtde_estoque" min="0" required>
+                    </div>
+                    <button type="submit" class="btn btn-blue">Salvar Alterações da Peça</button>
+                </form>
+            </div>
+
+            <!-- Adicionar e Editar Serviço -->
+            <div class="card">
+                <h2>🛠️ Adicionar ou Editar Serviço</h2>
+                <form method="POST" style="margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid #f1f5f9;">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="adicionar_servico">
+
+                    <div class="form-group">
+                        <label>Nome do Novo Serviço</label>
+                        <input type="text" name="nome" placeholder="Ex: Troca de Tela, Formatação" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Preço da Mão de Obra (R$)</label>
+                        <input type="number" step="0.01" name="preco" placeholder="Ex: 120.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <textarea name="descricao" rows="2" placeholder="Detalhes do serviço..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Adicionar Serviço</button>
+                </form>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="editar_servico">
+
+                    <div class="form-group">
+                        <label>Editar Serviço Existente</label>
+                        <select name="id_servico" required>
+                            <option value="">Selecione o serviço...</option>
+                            {% for s in servicos %}
+                                <option value="{{ s.id }}">#{{ s.id }} - {{ s.Nome }} (R$ {{ s.Preco }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Novo Nome do Serviço</label>
+                        <input type="text" name="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Novo Preço (R$)</label>
+                        <input type="number" step="0.01" name="preco" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nova Descrição</label>
+                        <input type="text" name="descricao" required>
+                    </div>
+                    <button type="submit" class="btn btn-blue">Atualizar Serviço</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabelas de Peças e Serviços com botão de Excluir -->
+        <div class="grid-forms">
+            <div class="card table-card">
+                <h2>📋 Peças Cadastradas no Estoque</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Marca / Série</th>
+                            <th>Preço</th>
+                            <th>Estoque</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in pecas %}
+                            <tr>
+                                <td><strong>{{ p.Nome }}</strong></td>
+                                <td>{{ p.Marca }} ({{ p.Num_serie }})</td>
+                                <td>R$ {{ p.Preco|floatformat:2 }}</td>
+                                <td>{{ p.Qtde_estoque }} un.</td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="acao" value="excluir_produto">
+                                        <input type="hidden" name="id_produto" value="{{ p.id }}">
+                                        <button type="submit" class="btn-danger-sm">Excluir</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5">Nenhuma peça cadastrada.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card table-card">
+                <h2>📋 Serviços Cadastrados</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Serviço</th>
+                            <th>Descrição</th>
+                            <th>Preço</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in servicos %}
+                            <tr>
+                                <td><strong>{{ s.Nome }}</strong></td>
+                                <td>{{ s.Descricao }}</td>
+                                <td>R$ {{ s.Preco|floatformat:2 }}</td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="acao" value="excluir_servico">
+                                        <input type="hidden" name="id_servico" value="{{ s.id }}">
+                                        <button type="submit" class="btn-danger-sm">Excluir</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="4">Nenhum serviço cadastrado.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 2: GERENCIAMENTO DE FUNCIONÁRIOS (TÉCNICOS E ATENDENTES) -->
+        <div class="section-title">👥 2. Gerenciamento de Usuários (Técnicos e Atendentes)</div>
+        <div class="grid-forms">
+            <!-- Adicionar Técnico -->
+            <div class="card">
+                <h2>🛠️ Contratar / Adicionar Técnico</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="adicionar_tecnico">
+
+                    <div class="form-group">
+                        <label>Nome do Técnico</label>
+                        <input type="text" name="nome" placeholder="Ex: Carlos Mendes" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Usuário de Login (Opcional)</label>
+                        <input type="text" name="username" placeholder="Ex: carlos.tecnico">
+                    </div>
+                    <div class="form-group">
+                        <label>Senha de Login (Opcional)</label>
+                        <input type="password" name="password" placeholder="Defina uma senha de acesso">
+                    </div>
+                    <button type="submit" class="btn">Adicionar Técnico</button>
+                </form>
+            </div>
+
+            <!-- Adicionar Atendente -->
+            <div class="card">
+                <h2>🎧 Contratar / Adicionar Atendente</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="adicionar_atendente">
+
+                    <div class="form-group">
+                        <label>Nome do Atendente</label>
+                        <input type="text" name="nome" placeholder="Ex: Ana Paula" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Usuário de Login (Opcional)</label>
+                        <input type="text" name="username" placeholder="Ex: ana.atendente">
+                    </div>
+                    <div class="form-group">
+                        <label>Senha de Login (Opcional)</label>
+                        <input type="password" name="password" placeholder="Defina uma senha de acesso">
+                    </div>
+                    <button type="submit" class="btn">Adicionar Atendente</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabelas de Técnicos e Atendentes com botão de Desligar -->
+        <div class="grid-forms">
+            <div class="card table-card">
+                <h2>🛠️ Técnicos Ativos</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Cargo</th>
+                            <th>Login</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in tecnicos %}
+                            <tr>
+                                <td>#{{ t.id }}</td>
+                                <td><strong>{{ t.Nome }}</strong></td>
+                                <td><span class="role-pill">{{ t.Cargo }}</span></td>
+                                <td>{{ t.user.username|default:"-" }}</td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="acao" value="desligar_tecnico">
+                                        <input type="hidden" name="id_tecnico" value="{{ t.id }}">
+                                        <button type="submit" class="btn-danger-sm">Desligar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5">Nenhum técnico cadastrado.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card table-card">
+                <h2>🎧 Atendentes Ativos</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Cargo</th>
+                            <th>Login</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in atendentes %}
+                            <tr>
+                                <td>#{{ a.id }}</td>
+                                <td><strong>{{ a.Nome }}</strong></td>
+                                <td><span class="role-pill">{{ a.Cargo }}</span></td>
+                                <td>{{ a.user.username|default:"-" }}</td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="acao" value="desligar_atendente">
+                                        <input type="hidden" name="id_atendente" value="{{ a.id }}">
+                                        <button type="submit" class="btn-danger-sm">Desligar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5">Nenhum atendente cadastrado.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
